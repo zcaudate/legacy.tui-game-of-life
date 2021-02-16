@@ -9,10 +9,10 @@ when resolving async calls but button presses work as expected.
 
 ``` shell
 make dev
-```
+#+END_MSRC
 
-### Package
+*** Package
 
-``` shell
+#+BEGIN_SRC shell :results output silent :cache no :eval no
 make package
 ```

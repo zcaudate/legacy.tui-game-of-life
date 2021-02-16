@@ -1,9 +1,9 @@
-import _ from 'lodash';
-import {useImmer} from 'use-immer';
-import React,{useState} from 'react';
-import blessed from 'blessed';
-import {render} from 'react-blessed';
-import ut from 'util'
+import _ from "lodash";
+import ut from "util";
+import { useImmer } from "use-immer";
+import React, { useState } from "react";
+import blessed from "blessed";
+import { render } from "react-blessed";
 
 const ROWS = 32;
 
@@ -108,13 +108,6 @@ function TimeControl(props) {
       ></Button>
       <Button
         left={21}
-        text="PAUSE"
-        color="blue"
-        disabled={!props.state.timer}
-        action={props.fn.pause}
-      ></Button>
-      <Button
-        left={30}
         text="NEXT"
         color="blue"
         disabled={props.state.timer}
@@ -131,7 +124,13 @@ function TimeControl(props) {
 }
 
 function initialState(rows, cols) {
-  return { timer: null, rows: rows, cols: cols, grid: gridCreate(rows, cols) };
+  return {
+    timer: null,
+    rows: rows,
+    cols: cols,
+    grid: gridCreate(rows, cols),
+    counter: 0,
+  };
 }
 
 function GridView(props) {
@@ -162,6 +161,7 @@ function App() {
   let next_fn = function () {
     let { cols, grid, rows, timer } = state;
     setState(function (draft) {
+      draft.counter++;
       draft.grid = gridNext(grid, rows, cols);
     });
   };
@@ -176,7 +176,7 @@ function App() {
     start: function () {
       let { timer } = state;
       if (!timer) {
-        let timer = setInterval(next_fn, INTERVAL);
+        timer = setInterval(next_fn, INTERVAL);
         setState(function (draft) {
           draft.timer = timer;
         });
@@ -204,7 +204,7 @@ function App() {
         top={1}
         width={40}
         shrink={true}
-        content={state.timer ? ut.inspect(state.timer) : ""}
+        content={"" + state.counter}
         left={80}
       ></box>
     </box>

@@ -1,29 +1,31 @@
 const webpack = require("webpack");
-const path = require("path");
-const RunNodeWebpackPlugin = require("run-node-webpack-plugin");
-const WebpackNodeExternals = require("webpack-node-externals")
 
-const common_config = {
+const path = require("path");
+
+const jsx_rule = {
+  test: /\.jsx?$/,
+  use: [
+    { loader: "cache-loader" },
+    {
+      loader: "@sucrase/webpack-loader",
+      options: { transforms: ["jsx"] },
+    },
+  ],
+};
+
+const RunNodeWebpackPlugin = require("run-node-webpack-plugin");
+
+const WebpackNodeExternals = require("webpack-node-externals");
+
+const node_common_config = {
   entry: "./src/main.js",
   target: "node",
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        use: [
-          {
-            loader: "@sucrase/webpack-loader",
-            options: { transforms: ["jsx"] },
-          },
-        ],
-      },
-    ],
-  },
+  module: { rules: [jsx_rule] },
   externals: [WebpackNodeExternals()],
 };
 
-const dev_config = {
-  ...common_config,
+const node_dev_config = {
+  ...node_common_config,
   mode: "development",
   output: { path: path.join(__dirname, "dist"), filename: "main.js" },
   plugins: [
@@ -36,19 +38,19 @@ const dev_config = {
   ],
 };
 
-const prod_config = {
-  ...common_config,
+const node_prod_config = {
+  ...node_common_config,
   mode: "production",
   output: { path: path.join(__dirname, "dist"), filename: "main.min.js" },
   plugins: [new webpack.IgnorePlugin(/\.(css|less)$/)],
 };
 
-function config(env) {
+const node_config = function (env) {
   if (env.prod) {
-    return prod_config;
+    return node_prod_config;
   } else {
-    return dev_config;
+    return node_dev_config;
   }
-}
+};
 
-module.exports=config
+module.exports=node_config;

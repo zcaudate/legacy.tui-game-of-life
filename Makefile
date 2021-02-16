@@ -1,6 +1,11 @@
-dev:
-	yarn dev
-package:
-	yarn package
 init:
-	yarn install
+	pnpm install
+
+dev:
+	pnpm dev
+
+package:
+	pnpm package
+
+release: package
+	pnpm release
